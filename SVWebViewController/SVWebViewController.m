@@ -90,17 +90,17 @@
     
 	[super viewWillAppear:animated];
 	
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        [self.navigationController setToolbarHidden:NO animated:animated];
-    }
+//    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+//        [self.navigationController setToolbarHidden:NO animated:animated];
+//    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        [self.navigationController setToolbarHidden:YES animated:animated];
-    }
+//    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+//        [self.navigationController setToolbarHidden:YES animated:animated];
+//    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -108,12 +108,12 @@
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-        return YES;
-    
-    return toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown;
-}
+//- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
+//    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+//        return YES;
+//    
+//    return toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown;
+//}
 
 #pragma mark - Getters
 
@@ -172,54 +172,55 @@
 #pragma mark - Toolbar
 
 - (void)updateToolbarItems {
-    self.backBarButtonItem.enabled = self.self.webView.canGoBack;
-    self.forwardBarButtonItem.enabled = self.self.webView.canGoForward;
+//    self.backBarButtonItem.enabled = self.self.webView.canGoBack;
+//    self.forwardBarButtonItem.enabled = self.self.webView.canGoForward;
+
     self.actionBarButtonItem.enabled = !self.self.webView.isLoading;
     
-    UIBarButtonItem *refreshStopBarButtonItem = self.self.webView.isLoading ? self.stopBarButtonItem : self.refreshBarButtonItem;
+//    UIBarButtonItem *refreshStopBarButtonItem = self.self.webView.isLoading ? self.stopBarButtonItem : self.refreshBarButtonItem;
+//    
+//    UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+//    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
-    UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        CGFloat toolbarWidth = 250.0f;
-        fixedSpace.width = 35.0f;
+//    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+//        CGFloat toolbarWidth = 44.0f;
+//        fixedSpace.width = 35.0f;
 
         NSArray *items = [NSArray arrayWithObjects:
-                          fixedSpace,
-                          refreshStopBarButtonItem,
-                          fixedSpace,
-                          self.backBarButtonItem,
-                          fixedSpace,
-                          self.forwardBarButtonItem,
-                          fixedSpace,
+//                          fixedSpace,
+//                          refreshStopBarButtonItem,
+//                          fixedSpace,
+//                          self.backBarButtonItem,
+//                          fixedSpace,
+//                          self.forwardBarButtonItem,
+//                          fixedSpace,
                           self.actionBarButtonItem,
                           nil];
         
-        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f, 0.0f, toolbarWidth, 44.0f)];
-        toolbar.items = items;
-        toolbar.barStyle = self.navigationController.navigationBar.barStyle;
-        toolbar.tintColor = self.navigationController.navigationBar.tintColor;
+//        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f, 0.0f, toolbarWidth, 44.0f)];
+//        toolbar.items = items;
+//        toolbar.barStyle = self.navigationController.navigationBar.barStyle;
+//        toolbar.tintColor = self.navigationController.navigationBar.tintColor;
         self.navigationItem.rightBarButtonItems = items.reverseObjectEnumerator.allObjects;
-    }
-    
-    else {
-        NSArray *items = [NSArray arrayWithObjects:
-                          fixedSpace,
-                          self.backBarButtonItem,
-                          flexibleSpace,
-                          self.forwardBarButtonItem,
-                          flexibleSpace,
-                          refreshStopBarButtonItem,
-                          flexibleSpace,
-                          self.actionBarButtonItem,
-                          fixedSpace,
-                          nil];
-        
-        self.navigationController.toolbar.barStyle = self.navigationController.navigationBar.barStyle;
-        self.navigationController.toolbar.tintColor = self.navigationController.navigationBar.tintColor;
-        self.toolbarItems = items;
-    }
+//    }
+//    
+//    else {
+//        NSArray *items = [NSArray arrayWithObjects:
+//                          fixedSpace,
+//                          self.backBarButtonItem,
+//                          flexibleSpace,
+//                          self.forwardBarButtonItem,
+//                          flexibleSpace,
+//                          refreshStopBarButtonItem,
+//                          flexibleSpace,
+//                          self.actionBarButtonItem,
+//                          fixedSpace,
+//                          nil];
+//        
+//        self.navigationController.toolbar.barStyle = self.navigationController.navigationBar.barStyle;
+//        self.navigationController.toolbar.tintColor = self.navigationController.navigationBar.tintColor;
+//        self.toolbarItems = items;
+//    }
 }
 
 #pragma mark - UIWebViewDelegate
