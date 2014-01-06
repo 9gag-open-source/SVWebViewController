@@ -8,7 +8,17 @@
 
 #import "SVModalWebViewController.h"
 
+@protocol SVWebViewControllerShareDelegate <NSObject>
+@required
+@optional
+-(void)shareURL:(NSURL *)url withTitle:(NSString *)title fromViewController:(UIViewController *)viewController;
+@end
+
 @interface SVWebViewController : UIViewController
+
+
+
+@property(nonatomic, weak) id <SVWebViewControllerShareDelegate> shareDelegate;
 
 - (id)initWithAddress:(NSString*)urlString;
 - (id)initWithURL:(NSURL*)URL;

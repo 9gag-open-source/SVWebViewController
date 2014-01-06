@@ -263,10 +263,14 @@
 }
 
 - (void)actionButtonClicked:(id)sender {
-    NSArray *activities = @[[SVWebViewControllerActivitySafari new], [SVWebViewControllerActivityChrome new]];
-    
-    UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[self.self.webView.request.URL] applicationActivities:activities];
-    [self presentViewController:activityController animated:YES completion:nil];
+    if (self.shareDelegate) {
+        [self.shareDelegate shareURL:self.webView.request.URL withTitle:[self.webView stringByEvaluatingJavaScriptFromString:@"document.title"] fromViewController:self];
+    } else {
+        NSArray *activities = @[[SVWebViewControllerActivitySafari new], [SVWebViewControllerActivityChrome new]];
+        
+        UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[self.self.webView.request.URL] applicationActivities:activities];
+        [self presentViewController:activityController animated:YES completion:nil];
+    }
 }
 
 - (void)doneButtonClicked:(id)sender {
