@@ -172,12 +172,12 @@
 #pragma mark - Toolbar
 
 - (void)updateToolbarItems {
-//    self.backBarButtonItem.enabled = self.self.webView.canGoBack;
-//    self.forwardBarButtonItem.enabled = self.self.webView.canGoForward;
+//    self.backBarButtonItem.enabled = self.webView.canGoBack;
+//    self.forwardBarButtonItem.enabled = self.webView.canGoForward;
 
-    self.actionBarButtonItem.enabled = !self.webView.isLoading;
+//    self.actionBarButtonItem.enabled = !self.webView.isLoading;
     
-//    UIBarButtonItem *refreshStopBarButtonItem = self.self.webView.isLoading ? self.stopBarButtonItem : self.refreshBarButtonItem;
+//    UIBarButtonItem *refreshStopBarButtonItem = self.webView.isLoading ? self.stopBarButtonItem : self.refreshBarButtonItem;
 //    
 //    UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
 //    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
@@ -264,11 +264,20 @@
 
 - (void)actionButtonClicked:(id)sender {
     if (self.shareDelegate) {
-        [self.shareDelegate shareURL:self.webView.request.URL withTitle:[self.webView stringByEvaluatingJavaScriptFromString:@"document.title"] fromViewController:self];
+        
+        NSString *expectedTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+        NSURL *expectedURL = self.webView.request.URL;
+        
+        if(!expectedTitle || [expectedTitle isEqualToString:@""]){
+            expectedTitle = self.URL.absoluteString;
+        }
+        if(!expectedURL.absoluteString || [expectedURL.absoluteString isEqualToString:@""]){
+            expectedURL = self.URL;
+        }
+        [self.shareDelegate shareURL:expectedURL withTitle:expectedTitle fromViewController:self];
     } else {
         NSArray *activities = @[[SVWebViewControllerActivitySafari new], [SVWebViewControllerActivityChrome new]];
-        
-        UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[self.self.webView.request.URL] applicationActivities:activities];
+        UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[self.webView.request.URL] applicationActivities:activities];
         [self presentViewController:activityController animated:YES completion:nil];
     }
 }
