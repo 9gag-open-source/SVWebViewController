@@ -17,6 +17,7 @@
 @property (nonatomic, strong) UIBarButtonItem *refreshBarButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *stopBarButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *actionBarButtonItem;
+@property (nonatomic, strong) UIBarButtonItem *activityIndicatorItem;
 
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) NSURL *URL;
@@ -172,6 +173,17 @@
     return _actionBarButtonItem;
 }
 
+- (UIBarButtonItem *)activityIndicatorItem {
+    if (!_activityIndicatorItem) {
+        UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 25, 25)];
+        [activityView sizeToFit];
+        [activityView setAutoresizingMask:(UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin)];
+        _activityIndicatorItem = [[UIBarButtonItem alloc] initWithCustomView:activityView];
+        
+    }
+    return _activityIndicatorItem;
+}
+
 #pragma mark - Toolbar
 
 - (void)updateToolbarItems {
@@ -181,6 +193,10 @@
 //    self.actionBarButtonItem.enabled = !self.webView.isLoading;
     
     UIBarButtonItem *refreshStopBarButtonItem = self.webView.isLoading ? self.stopBarButtonItem : self.refreshBarButtonItem;
+    
+    self.webView.isLoading? [((UIActivityIndicatorView *)self.activityIndicatorItem.customView) startAnimating] :
+        [((UIActivityIndicatorView *)self.activityIndicatorItem.customView) stopAnimating];
+    
 
     UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
@@ -190,6 +206,8 @@
         fixedSpace.width = 35.0f;
 
         NSArray *items = [NSArray arrayWithObjects:
+                          fixedSpace,
+                          self.activityIndicatorItem,
                           fixedSpace,
                           refreshStopBarButtonItem,
                           fixedSpace,
@@ -208,6 +226,9 @@
     }
     
     else {
+        
+        fixedSpace.width = 20;
+        
         NSArray *items = [NSArray arrayWithObjects:
                           fixedSpace,
                           self.backBarButtonItem,
@@ -224,6 +245,7 @@
         self.navigationController.toolbar.tintColor = self.navigationController.navigationBar.tintColor;
         self.toolbarItems = items;
         
+        self.navigationItem.rightBarButtonItem = self.activityIndicatorItem;
     }
 }
 
