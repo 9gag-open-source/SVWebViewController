@@ -55,9 +55,7 @@
     
     if(self = [super init]) {
         self.URL = pageURL;
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            [self setHidesBottomBarWhenPushed:YES];
-        }
+        [self setHidesBottomBarWhenPushed:YES];
     }
     
     return self;
