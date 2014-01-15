@@ -130,43 +130,37 @@
 
 - (UIBarButtonItem *)backBarButtonItem {
     if (!_backBarButtonItem) {
-        _backBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"SVWebViewController.bundle/SVWebViewControllerBack"]
-                                                             style:UIBarButtonItemStylePlain
-                                                            target:self
-                                                            action:@selector(goBackClicked:)];
-		_backBarButtonItem.width = 18.0f;
+        _backBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"svwebview-btn-arrow-left"] style:UIBarButtonItemStylePlain target:self action:@selector(goBackClicked:)];
+//		_backBarButtonItem.width = 18.0f;
     }
     return _backBarButtonItem;
 }
 
 - (UIBarButtonItem *)forwardBarButtonItem {
     if (!_forwardBarButtonItem) {
-        _forwardBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"SVWebViewController.bundle/SVWebViewControllerNext"]
-                                                                style:UIBarButtonItemStylePlain
-                                                               target:self
-                                                               action:@selector(goForwardClicked:)];
-		_forwardBarButtonItem.width = 18.0f;
+        _forwardBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"svwebview-btn-arrow-right"] style:UIBarButtonItemStylePlain target:self action:@selector(goForwardClicked:)];
+//		_forwardBarButtonItem.width = 18.0f;
     }
     return _forwardBarButtonItem;
 }
 
 - (UIBarButtonItem *)refreshBarButtonItem {
     if (!_refreshBarButtonItem) {
-        _refreshBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(reloadClicked:)];
+        _refreshBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"svwebview-nav-reload"] style:UIBarButtonItemStylePlain target:self action:@selector(reloadClicked:)];
     }
     return _refreshBarButtonItem;
 }
 
 - (UIBarButtonItem *)stopBarButtonItem {
     if (!_stopBarButtonItem) {
-        _stopBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(stopClicked:)];
+        _stopBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"svwebview-btn-stop"] style:UIBarButtonItemStylePlain target:self action:@selector(stopClicked:)];
     }
     return _stopBarButtonItem;
 }
 
 - (UIBarButtonItem *)actionBarButtonItem {
     if (!_actionBarButtonItem) {
-        _actionBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionButtonClicked:)];
+        _actionBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"svwebview-overlay-btn-share"] style:UIBarButtonItemStylePlain target:self action:@selector(actionButtonClicked:)];
     }
     return _actionBarButtonItem;
 }
@@ -225,7 +219,7 @@
     
     else {
         
-        fixedSpace.width = 20;
+//        fixedSpace.width = 20;
         
         NSArray *items = [NSArray arrayWithObjects:
                           fixedSpace,
