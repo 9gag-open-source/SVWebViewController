@@ -95,6 +95,40 @@
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [self.navigationController setToolbarHidden:NO animated:animated];
     }
+    [self smartSetInsets];
+    if(IS_IOS_6){
+        if([self.navigationController.viewControllers count] > 1){
+            UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"nav-back"]
+                                                                           style:UIBarButtonItemStyleBordered
+                                                                          target:self
+                                                                          action:@selector(popNavigationController)];
+            self.navigationItem.leftBarButtonItem = backButton;
+        }
+    } else {
+        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
+        backButton.title = @" ";
+        self.navigationItem.backBarButtonItem = backButton;
+    }
+}
+-(void)smartSetInsets {
+    // required by iOS6 only
+    if(IS_IOS_6 && self.navigationController.navigationBar.isTranslucent){
+//        CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
+//        CGFloat statusBarHeight = MIN(statusBarSize.width, statusBarSize.height);
+        
+        UIEdgeInsets contentInsets = UIEdgeInsetsMake(
+//                                                      (self.navigationController ? self.navigationController.navigationBar.frame.size.height : 0) + statusBarHeight,
+                                                      (self.navigationController ? self.navigationController.navigationBar.frame.size.height : 0),
+                                                      0.0,
+//                                                      self.tabBarController ? self.tabBarController.tabBar.frame.size.height : 0,
+                                                      0.0,
+                                                      0.0);
+        self.webView.scrollView.contentInset = contentInsets;
+        self.webView.scrollView.scrollIndicatorInsets = contentInsets;
+    }
+}
+- (void)popNavigationController {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -235,6 +269,9 @@
         
         self.navigationController.toolbar.barStyle = self.navigationController.navigationBar.barStyle;
         self.navigationController.toolbar.tintColor = self.navigationController.navigationBar.tintColor;
+        if(IS_IOS_6){
+            [self.navigationController.toolbar setBackgroundImage:[UIImage imageNamed:@"toolbar-background-dark"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+        }
         self.toolbarItems = items;
         
         self.navigationItem.rightBarButtonItem = self.activityIndicatorItem;
