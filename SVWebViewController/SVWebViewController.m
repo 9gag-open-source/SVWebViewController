@@ -333,7 +333,7 @@
     } else {
         NSArray *activities = @[[SVWebViewControllerActivitySafari new], [SVWebViewControllerActivityChrome new]];
         UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[self.webView.request.URL] applicationActivities:activities];
-        [self presentViewController:activityController animated:YES completion:nil];
+        [[UIApplication topMostViewController] presentViewController:activityController animated:YES completion:nil];
     }
 }
 
