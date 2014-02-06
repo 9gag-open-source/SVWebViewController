@@ -56,6 +56,7 @@
     if(self = [super init]) {
         self.URL = pageURL;
         [self setHidesBottomBarWhenPushed:YES];
+        self.hideControls = NO;
     }
     
     return self;
@@ -92,7 +93,7 @@
     
 	[super viewWillAppear:animated];
 	
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    if (!self.hideControls && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [self.navigationController setToolbarHidden:NO animated:animated];
     }
     [self smartSetInsets];
@@ -213,6 +214,9 @@
 #pragma mark - Toolbar
 
 - (void)updateToolbarItems {
+    
+    if(self.hideControls) return;
+    
     self.backBarButtonItem.enabled = self.webView.canGoBack;
     self.forwardBarButtonItem.enabled = self.webView.canGoForward;
 
@@ -283,19 +287,31 @@
 - (void)webViewDidStartLoad:(UIWebView *)webView {
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     [self updateToolbarItems];
+    if(self.delegate && [self.delegate respondsToSelector:@selector(webViewController:webViewDidStartLoad:)]){
+        [self.delegate webViewController:self webViewDidStartLoad:webView];
+    }
 }
 
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
+
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     
     self.navigationItem.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     [self updateToolbarItems];
+    
+    if(self.delegate && [self.delegate respondsToSelector:@selector(webViewController:webViewDidFinishLoad:)]){
+        [self.delegate webViewController:self webViewDidFinishLoad:webView];
+    }
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     [self updateToolbarItems];
+    
+    if(self.delegate && [self.delegate respondsToSelector:@selector(webViewController:webView:didFailLoadWithError:)]){
+        [self.delegate webViewController:self webView:webView didFailLoadWithError:error];
+    }
 }
 
 #pragma mark - Target actions
