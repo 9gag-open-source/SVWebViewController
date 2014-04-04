@@ -9,6 +9,7 @@
 #import "SVWebViewControllerActivityChrome.h"
 #import "SVWebViewControllerActivitySafari.h"
 #import "SVWebViewController.h"
+#import "UIApplication+TopMostViewController.h"
 
 @interface SVWebViewController () <UIWebViewDelegate>
 
