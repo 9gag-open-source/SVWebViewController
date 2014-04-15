@@ -20,6 +20,7 @@
 - (void)webViewController:(SVWebViewController *)webViewController webViewDidStartLoad:(UIWebView *)webView;
 - (void)webViewController:(SVWebViewController *)webViewController webViewDidFinishLoad:(UIWebView *)webView;
 - (void)webViewController:(SVWebViewController *)webViewController webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error;
+- (BOOL)webViewController:(SVWebViewController *)webViewController webViewShouldStartLoad:(UIWebView *)webView withRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType;
 @end
 
 @interface SVWebViewController : UIViewController

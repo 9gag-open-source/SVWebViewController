@@ -315,6 +315,13 @@
     }
 }
 
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+    if(self.delegate && [self.delegate respondsToSelector:@selector(webViewController:webViewShouldStartLoad:withRequest:navigationType:)]){
+        return [self.delegate webViewController:self webViewShouldStartLoad:webView withRequest:request navigationType:navigationType];
+    }
+    return YES;
+}
+
 #pragma mark - Target actions
 
 - (void)goBackClicked:(UIBarButtonItem *)sender {
