@@ -8,6 +8,8 @@
 
 #import "SVModalWebViewController.h"
 
+@class NJKWebViewProgressView;
+
 @protocol SVWebViewControllerShareDelegate <NSObject>
 @required
 @optional
@@ -31,6 +33,9 @@
 @property(nonatomic, weak) id <SVWebViewControllerShareDelegate> shareDelegate;
 
 @property (nonatomic, readwrite) BOOL hideControls;
+@property (nonatomic, readwrite) BOOL hideProgress;
+@property (nonatomic, readonly) UIWebView *webView;
+@property (nonatomic, readonly) NJKWebViewProgressView *progressView;
 
 - (id)initWithAddress:(NSString*)urlString;
 - (id)initWithURL:(NSURL*)URL;

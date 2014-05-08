@@ -10,8 +10,10 @@
 #import "SVWebViewControllerActivitySafari.h"
 #import "SVWebViewController.h"
 #import "UIApplication+TopMostViewController.h"
+#import "NJKWebViewProgressView.h"
+#import "NJKWebViewProgress.h"
 
-@interface SVWebViewController () <UIWebViewDelegate>
+@interface SVWebViewController () <UIWebViewDelegate, NJKWebViewProgressDelegate>
 
 @property (nonatomic, strong) UIBarButtonItem *backBarButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *forwardBarButtonItem;
@@ -21,6 +23,9 @@
 @property (nonatomic, strong) UIBarButtonItem *activityIndicatorItem;
 
 @property (nonatomic, strong) UIWebView *webView;
+@property (nonatomic, strong) NJKWebViewProgressView *progressView;
+@property (nonatomic, strong) NJKWebViewProgress *progressProxy;
+
 @property (nonatomic, strong) NSURL *URL;
 
 - (id)initWithAddress:(NSString*)urlString;
@@ -57,6 +62,7 @@
     if(self = [super init]) {
         self.URL = pageURL;
         [self setHidesBottomBarWhenPushed:YES];
+        self.hideProgress = NO;
         self.hideControls = NO;
     }
     
@@ -111,6 +117,25 @@
         backButton.title = @" ";
         self.navigationItem.backBarButtonItem = backButton;
     }
+    
+    if(!self.hideProgress){
+        
+        _progressProxy = [[NJKWebViewProgress alloc] init];
+        CGFloat progressBarHeight = 2.f;
+        CGRect navigaitonBarBounds = self.navigationController.navigationBar.bounds;
+        CGRect barFrame = CGRectMake(0, navigaitonBarBounds.size.height - progressBarHeight, navigaitonBarBounds.size.width, progressBarHeight);
+        _progressView = [[NJKWebViewProgressView alloc] initWithFrame:barFrame];
+        _progressView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+        [self.navigationController.navigationBar addSubview:_progressView];
+        
+        _webView.delegate = _progressProxy;
+        _progressProxy.webViewProxyDelegate = self;
+        _progressProxy.progressDelegate = self;
+        
+    } else {
+        _webView.delegate = self;
+    }
+    
 }
 -(void)smartSetInsets {
     // required by iOS6 only
@@ -158,7 +183,6 @@
 - (UIWebView*)webView {
     if(!_webView) {
         _webView = [[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        _webView.delegate = self;
         _webView.scalesPageToFit = YES;
     }
     return _webView;
@@ -281,6 +305,13 @@
         
         self.navigationItem.rightBarButtonItem = self.activityIndicatorItem;
     }
+}
+
+#pragma mark - NJKWebViewProgressDelegate
+-(void)webViewProgress:(NJKWebViewProgress *)webViewProgress updateProgress:(float)progress
+{
+    [_progressView setProgress:progress animated:YES];
+    self.title = [_webView stringByEvaluatingJavaScriptFromString:@"document.title"];
 }
 
 #pragma mark - UIWebViewDelegate

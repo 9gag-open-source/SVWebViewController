@@ -1,0 +1,3 @@
+[submodule "submodules/NJKWebViewProgress"]
+	path = submodules/NJKWebViewProgress
+	url = https://github.com/ninjinkun/NJKWebViewProgress.git
