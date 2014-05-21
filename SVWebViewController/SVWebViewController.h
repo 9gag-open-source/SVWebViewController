@@ -37,6 +37,9 @@
 @property (nonatomic, readonly) UIWebView *webView;
 @property (nonatomic, readonly) NJKWebViewProgressView *progressView;
 
+
+- (void)doneButtonClicked:(id)sender;
+
 - (id)initWithAddress:(NSString*)urlString;
 - (id)initWithURL:(NSURL*)URL;
 
