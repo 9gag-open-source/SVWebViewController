@@ -117,6 +117,8 @@
         _progressView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
         [self.navigationController.navigationBar addSubview:_progressView];
         
+        [_progressView setProgress:0.0f];
+        
         _webView.delegate = _progressProxy;
         _progressProxy.webViewProxyDelegate = self;
         _progressProxy.progressDelegate = self;
