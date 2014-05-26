@@ -131,6 +131,14 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+    
+    if (_progressView) {
+        [_progressView removeFromSuperview];
+        _progressProxy.webViewProxyDelegate = nil;
+        _progressProxy.progressDelegate = nil;
+    }
+    _webView.delegate = nil;
+    
     [super viewWillDisappear:animated];
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
