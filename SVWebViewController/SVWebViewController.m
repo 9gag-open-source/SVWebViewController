@@ -57,15 +57,22 @@
     return [self initWithURL:[NSURL URLWithString:urlString]];
 }
 
+- (id)initWithLocalAddress:(NSString *)urlString {
+    return [self initWithURL:[NSURL fileURLWithPath:urlString]];
+}
+
 - (id)initWithURL:(NSURL*)pageURL {
-    
+    self = [self init];
+    self.URL = pageURL;
+    return self;
+}
+
+- (id)init {
     if(self = [super init]) {
-        self.URL = pageURL;
         [self setHidesBottomBarWhenPushed:YES];
         self.hideProgress = NO;
         self.hideControls = NO;
     }
-    
     return self;
 }
 
@@ -227,7 +234,6 @@
     
     self.backBarButtonItem.enabled = self.webView.canGoBack;
     self.forwardBarButtonItem.enabled = self.webView.canGoForward;
-
 //    self.actionBarButtonItem.enabled = !self.webView.isLoading;
     
     UIBarButtonItem *refreshStopBarButtonItem = self.webView.isLoading ? self.stopBarButtonItem : self.refreshBarButtonItem;
@@ -235,6 +241,8 @@
     self.webView.isLoading? [((UIActivityIndicatorView *)self.activityIndicatorItem.customView) startAnimating] :
         [((UIActivityIndicatorView *)self.activityIndicatorItem.customView) stopAnimating];
     
+    BOOL isHTTP = [self.webView.request.URL.scheme isEqualToString:@"http"] || [self.webView.request.URL.scheme isEqualToString:@"https"];
+    _progressView.alpha = isHTTP? 1.0 : 0.0;
 
     UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
@@ -259,6 +267,7 @@
         UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f, 0.0f, toolbarWidth, 44.0f)];
         toolbar.items = items;
         toolbar.barStyle = self.navigationController.navigationBar.barStyle;
+        toolbar.barTintColor = self.navigationController.navigationBar.barTintColor;
         toolbar.tintColor = self.navigationController.navigationBar.tintColor;
         self.navigationItem.rightBarButtonItems = items.reverseObjectEnumerator.allObjects;
     }
@@ -280,6 +289,7 @@
                           nil];
         
         self.navigationController.toolbar.barStyle = self.navigationController.navigationBar.barStyle;
+        self.navigationController.toolbar.barTintColor = self.navigationController.navigationBar.barTintColor;
         self.navigationController.toolbar.tintColor = self.navigationController.navigationBar.tintColor;
         self.toolbarItems = items;
         

@@ -41,6 +41,7 @@
 - (void)doneButtonClicked:(id)sender;
 
 - (id)initWithAddress:(NSString*)urlString;
+- (id)initWithLocalAddress:(NSString*)urlString;
 - (id)initWithURL:(NSURL*)URL;
 
 @end
