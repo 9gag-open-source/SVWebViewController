@@ -26,8 +26,6 @@
 @property (nonatomic, strong) NJKWebViewProgressView *progressView;
 @property (nonatomic, strong) NJKWebViewProgress *progressProxy;
 
-@property (nonatomic, strong) NSURL *URL;
-
 - (id)initWithAddress:(NSString*)urlString;
 - (id)initWithURL:(NSURL*)URL;
 - (void)loadURL:(NSURL*)URL;
@@ -80,11 +78,16 @@
     [self.webView loadRequest:[NSURLRequest requestWithURL:pageURL]];
 }
 
+- (void)setURL:(NSURL *)URL {
+    _URL = URL;
+    [self loadURL:URL];
+}
+
 #pragma mark - View lifecycle
 
 - (void)loadView {
     self.view = self.webView;
-    [self loadURL:self.URL];
+//    [self loadURL:self.URL];
 }
 
 - (void)viewDidLoad {
@@ -236,10 +239,9 @@
     self.forwardBarButtonItem.enabled = self.webView.canGoForward;
 //    self.actionBarButtonItem.enabled = !self.webView.isLoading;
     
-    UIBarButtonItem *refreshStopBarButtonItem = self.webView.isLoading ? self.stopBarButtonItem : self.refreshBarButtonItem;
+    UIBarButtonItem *refreshStopBarButtonItem = (self.webView.isLoading || !self.URL) ? self.stopBarButtonItem : self.refreshBarButtonItem;
     
-    self.webView.isLoading? [((UIActivityIndicatorView *)self.activityIndicatorItem.customView) startAnimating] :
-        [((UIActivityIndicatorView *)self.activityIndicatorItem.customView) stopAnimating];
+    (self.webView.isLoading || !self.URL)? [((UIActivityIndicatorView *)self.activityIndicatorItem.customView) startAnimating] : [((UIActivityIndicatorView *)self.activityIndicatorItem.customView) stopAnimating];
     
     BOOL isHTTP = [self.webView.request.URL.scheme isEqualToString:@"http"] || [self.webView.request.URL.scheme isEqualToString:@"https"];
     _progressView.alpha = isHTTP? 1.0 : 0.0;
