@@ -34,6 +34,15 @@
 
 @property (nonatomic, readwrite) BOOL hideControls;
 @property (nonatomic, readwrite) BOOL hideProgress;
+@property (nonatomic, readwrite) BOOL hideTitle;
+@property (nonatomic, readwrite) BOOL hideBottomToolbar;
+
+@property (nonatomic, readonly) UIBarButtonItem *backBarButtonItem;
+@property (nonatomic, readonly) UIBarButtonItem *forwardBarButtonItem;
+@property (nonatomic, readonly) UIBarButtonItem *refreshBarButtonItem;
+@property (nonatomic, readonly) UIBarButtonItem *stopBarButtonItem;
+@property (nonatomic, readonly) UIBarButtonItem *actionBarButtonItem;
+@property (nonatomic, readonly) UIBarButtonItem *activityIndicatorItem;
 @property (nonatomic, readonly) UIWebView *webView;
 @property (nonatomic, readonly) NJKWebViewProgressView *progressView;
 
@@ -44,5 +53,8 @@
 - (id)initWithAddress:(NSString*)urlString;
 - (id)initWithLocalAddress:(NSString*)urlString;
 - (id)initWithURL:(NSURL*)URL;
+
+- (void)updateToolbarItems;
+- (void)createToolbarItems;
 
 @end

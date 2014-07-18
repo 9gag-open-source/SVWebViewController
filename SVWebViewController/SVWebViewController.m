@@ -30,8 +30,6 @@
 - (id)initWithURL:(NSURL*)URL;
 - (void)loadURL:(NSURL*)URL;
 
-- (void)updateToolbarItems;
-
 - (void)goBackClicked:(UIBarButtonItem *)sender;
 - (void)goForwardClicked:(UIBarButtonItem *)sender;
 - (void)reloadClicked:(UIBarButtonItem *)sender;
@@ -70,6 +68,8 @@
         [self setHidesBottomBarWhenPushed:YES];
         self.hideProgress = NO;
         self.hideControls = NO;
+        self.hideTitle = NO;
+        self.hideBottomToolbar = NO;
     }
     return self;
 }
@@ -110,7 +110,7 @@
     
 	[super viewWillAppear:animated];
 	
-    if (!self.hideControls && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    if (!self.hideBottomToolbar && !self.hideControls && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [self.navigationController setToolbarHidden:NO animated:animated];
     }
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
@@ -239,20 +239,26 @@
     self.forwardBarButtonItem.enabled = self.webView.canGoForward;
 //    self.actionBarButtonItem.enabled = !self.webView.isLoading;
     
-    UIBarButtonItem *refreshStopBarButtonItem = (self.webView.isLoading || !self.URL) ? self.stopBarButtonItem : self.refreshBarButtonItem;
-    
     (self.webView.isLoading || !self.URL)? [((UIActivityIndicatorView *)self.activityIndicatorItem.customView) startAnimating] : [((UIActivityIndicatorView *)self.activityIndicatorItem.customView) stopAnimating];
     
     BOOL isHTTP = [self.webView.request.URL.scheme isEqualToString:@"http"] || [self.webView.request.URL.scheme isEqualToString:@"https"];
     _progressView.alpha = isHTTP? 1.0 : 0.0;
 
+    [self createToolbarItems];
+    
+}
+
+- (void)createToolbarItems {
+    
+    UIBarButtonItem *refreshStopBarButtonItem = (self.webView.isLoading || !self.URL) ? self.stopBarButtonItem : self.refreshBarButtonItem;
+    
     UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         CGFloat toolbarWidth = 44.0f;
         fixedSpace.width = 35.0f;
-
+        
         NSArray *items = [NSArray arrayWithObjects:
                           fixedSpace,
                           self.activityIndicatorItem,
@@ -276,7 +282,7 @@
     
     else {
         
-//        fixedSpace.width = 20;
+        //        fixedSpace.width = 20;
         
         NSArray *items = [NSArray arrayWithObjects:
                           fixedSpace,
@@ -303,7 +309,9 @@
 -(void)webViewProgress:(NJKWebViewProgress *)webViewProgress updateProgress:(float)progress
 {
     [_progressView setProgress:progress animated:YES];
-    self.title = [_webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    if(!self.hideTitle){
+        self.title = [_webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    }
 }
 
 #pragma mark - UIWebViewDelegate
@@ -321,7 +329,9 @@
 
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     
-    self.navigationItem.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    if(!self.hideTitle){
+        self.navigationItem.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    }
     [self updateToolbarItems];
     
     if(self.delegate && [self.delegate respondsToSelector:@selector(webViewController:webViewDidFinishLoad:)]){
