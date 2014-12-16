@@ -240,7 +240,6 @@
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        CGFloat toolbarWidth = 44.0f;
         fixedSpace.width = 35.0f;
 
         NSArray *items = [NSArray arrayWithObjects:
