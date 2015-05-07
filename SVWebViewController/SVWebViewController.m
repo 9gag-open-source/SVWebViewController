@@ -26,13 +26,9 @@
 @property (nonatomic, strong) NJKWebViewProgressView *progressView;
 @property (nonatomic, strong) NJKWebViewProgress *progressProxy;
 
-@property (nonatomic, strong) NSURL *URL;
-
 - (id)initWithAddress:(NSString*)urlString;
 - (id)initWithURL:(NSURL*)URL;
 - (void)loadURL:(NSURL*)URL;
-
-- (void)updateToolbarItems;
 
 - (void)goBackClicked:(UIBarButtonItem *)sender;
 - (void)goForwardClicked:(UIBarButtonItem *)sender;
@@ -57,15 +53,24 @@
     return [self initWithURL:[NSURL URLWithString:urlString]];
 }
 
+- (id)initWithLocalAddress:(NSString *)urlString {
+    return [self initWithURL:[NSURL fileURLWithPath:urlString]];
+}
+
 - (id)initWithURL:(NSURL*)pageURL {
-    
+    self = [self init];
+    self.URL = pageURL;
+    return self;
+}
+
+- (id)init {
     if(self = [super init]) {
-        self.URL = pageURL;
         [self setHidesBottomBarWhenPushed:YES];
         self.hideProgress = NO;
         self.hideControls = NO;
+        self.hideTitle = NO;
+        self.hideBottomToolbar = NO;
     }
-    
     return self;
 }
 
@@ -73,11 +78,16 @@
     [self.webView loadRequest:[NSURLRequest requestWithURL:pageURL]];
 }
 
+- (void)setURL:(NSURL *)URL {
+    _URL = URL;
+    [self loadURL:URL];
+}
+
 #pragma mark - View lifecycle
 
 - (void)loadView {
     self.view = self.webView;
-    [self loadURL:self.URL];
+//    [self loadURL:self.URL];
 }
 
 - (void)viewDidLoad {
@@ -100,7 +110,7 @@
     
 	[super viewWillAppear:animated];
 	
-    if (!self.hideControls && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    if (!self.hideBottomToolbar && !self.hideControls && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [self.navigationController setToolbarHidden:NO animated:animated];
     }
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
@@ -227,21 +237,27 @@
     
     self.backBarButtonItem.enabled = self.webView.canGoBack;
     self.forwardBarButtonItem.enabled = self.webView.canGoForward;
-
 //    self.actionBarButtonItem.enabled = !self.webView.isLoading;
     
-    UIBarButtonItem *refreshStopBarButtonItem = self.webView.isLoading ? self.stopBarButtonItem : self.refreshBarButtonItem;
+    (self.webView.isLoading || !self.URL)? [((UIActivityIndicatorView *)self.activityIndicatorItem.customView) startAnimating] : [((UIActivityIndicatorView *)self.activityIndicatorItem.customView) stopAnimating];
     
-    self.webView.isLoading? [((UIActivityIndicatorView *)self.activityIndicatorItem.customView) startAnimating] :
-        [((UIActivityIndicatorView *)self.activityIndicatorItem.customView) stopAnimating];
-    
+    BOOL isHTTP = [self.webView.request.URL.scheme isEqualToString:@"http"] || [self.webView.request.URL.scheme isEqualToString:@"https"];
+    _progressView.alpha = isHTTP? 1.0 : 0.0;
 
+    [self createToolbarItems];
+    
+}
+
+- (void)createToolbarItems {
+    
+    UIBarButtonItem *refreshStopBarButtonItem = (self.webView.isLoading || !self.URL) ? self.stopBarButtonItem : self.refreshBarButtonItem;
+    
     UIBarButtonItem *fixedSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         fixedSpace.width = 35.0f;
-
+        
         NSArray *items = [NSArray arrayWithObjects:
                           fixedSpace,
                           self.activityIndicatorItem,
@@ -260,7 +276,7 @@
     
     else {
         
-//        fixedSpace.width = 20;
+        //        fixedSpace.width = 20;
         
         NSArray *items = [NSArray arrayWithObjects:
                           fixedSpace,
@@ -275,6 +291,7 @@
                           nil];
         
         self.navigationController.toolbar.barStyle = self.navigationController.navigationBar.barStyle;
+        self.navigationController.toolbar.barTintColor = self.navigationController.navigationBar.barTintColor;
         self.navigationController.toolbar.tintColor = self.navigationController.navigationBar.tintColor;
         self.navigationController.toolbar.barTintColor = self.navigationController.navigationBar.barTintColor;
         self.toolbarItems = items;
@@ -287,7 +304,9 @@
 -(void)webViewProgress:(NJKWebViewProgress *)webViewProgress updateProgress:(float)progress
 {
     [_progressView setProgress:progress animated:YES];
-    self.title = [_webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    if(!self.hideTitle){
+        self.title = [_webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    }
 }
 
 #pragma mark - UIWebViewDelegate
@@ -305,7 +324,9 @@
 
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     
-    self.navigationItem.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    if(!self.hideTitle){
+        self.navigationItem.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    }
     [self updateToolbarItems];
     
     if(self.delegate && [self.delegate respondsToSelector:@selector(webViewController:webViewDidFinishLoad:)]){
