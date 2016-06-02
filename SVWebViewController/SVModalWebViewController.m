@@ -31,11 +31,7 @@
         UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                                                     target:self.webViewController
                                                                                     action:@selector(doneButtonClicked:)];
-        
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-            self.webViewController.navigationItem.leftBarButtonItem = doneButton;
-        else
-            self.webViewController.navigationItem.rightBarButtonItem = doneButton;
+        self.webViewController.navigationItem.leftBarButtonItem = doneButton;
     }
     return self;
 }

@@ -113,6 +113,7 @@
     if (!self.hideBottomToolbar && !self.hideControls && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [self.navigationController setToolbarHidden:NO animated:animated];
     }
+    
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
     backButton.title = @" ";
     self.navigationItem.backBarButtonItem = backButton;
@@ -220,7 +221,8 @@
 
 - (UIBarButtonItem *)activityIndicatorItem {
     if (!_activityIndicatorItem) {
-        UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 25, 25)];
+        UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        activityView.frame = CGRectMake(0, 0, 25, 25);
         [activityView sizeToFit];
         [activityView setAutoresizingMask:(UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin)];
         _activityIndicatorItem = [[UIBarButtonItem alloc] initWithCustomView:activityView];
@@ -256,6 +258,7 @@
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+//        CGFloat toolbarWidth = 44.0f;
         fixedSpace.width = 35.0f;
         
         NSArray *items = [NSArray arrayWithObjects:
