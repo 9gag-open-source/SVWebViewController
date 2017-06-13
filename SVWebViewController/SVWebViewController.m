@@ -372,9 +372,8 @@
 	[self updateToolbarItems];
 }
 
-- (void)actionButtonClicked:(id)sender {
+- (void)actionButtonClicked:(UIBarButtonItem *)sender {
     if (self.shareDelegate) {
-        
         NSString *expectedTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
         NSURL *expectedURL = self.webView.request.URL;
         
@@ -387,8 +386,12 @@
         [self.shareDelegate shareURL:expectedURL withTitle:expectedTitle fromViewController:self];
     } else {
         NSArray *activities = @[[SVWebViewControllerActivitySafari new], [SVWebViewControllerActivityChrome new]];
-        UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[self.webView.request.URL] applicationActivities:activities];
-        [[UIApplication topMostViewController] presentViewController:activityController animated:YES completion:nil];
+        UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[self.webView.request.URL] applicationActivities:activities];
+        if ([activityViewController respondsToSelector:@selector(popoverPresentationController)]) {
+            UIPopoverPresentationController *presentationController = [activityViewController popoverPresentationController];
+            presentationController.barButtonItem = sender;
+        }
+        [self presentViewController:activityViewController animated:YES completion:nil];
     }
 }
 
